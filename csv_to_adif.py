@@ -1,6 +1,7 @@
 import sys
 import csv
 
+
 class QSO(object):
     def __init__(self, callsign, my_summit, date, time, band, mode, o_call, o_summit, notes):
         self._callsign = callsign
@@ -39,6 +40,7 @@ class QSO(object):
     def __gt__(self, other):
         return self._date > other._date
 
+
 class Log(object):
     def __init__(self, callsign):
         self._callsign = callsign
@@ -53,7 +55,7 @@ class Log(object):
         o_call = line[5]
         o_summit = line[6]
         notes = line[7]
-        
+
         qso = QSO(self._callsign, my_summit, date, time, band, mode, o_call, o_summit, notes)
         self._qsos.append(qso)
 
@@ -71,7 +73,7 @@ class Log(object):
         for qso in self._qsos:
             if qso.is_chase():
                 print(qso.get_SOTA_csv())
-    
+
     def write_ADIF(self):
         print("ADIF File:")
         output = f"<adif_ver:5>3.0.5\n<programid:10>K7ASQpylog\n\n"
@@ -79,7 +81,7 @@ class Log(object):
 
         for qso in self._qsos:
             output += (qso.get_ADIF())
-        
+
         print(output)
 
 
@@ -88,9 +90,11 @@ def build_log(filename, callsign):
     infile = open(filename, 'r')
     csvreader = csv.reader(infile)
     for entry in csvreader:
-        log.add(entry)
+        if entry[0][0] != '#':
+            log.add(entry)
     infile.close()
     return log
+
 
 def main():
 
@@ -103,7 +107,7 @@ def main():
     # print("Callsign: ", callsign)
     # print("File: ",droppedfile)
 
-    droppedfile = 'test.csv'
+    droppedfile = 'test2.csv'
     callsign = 'K7ASQ'
 
     log = build_log(droppedfile, callsign)
